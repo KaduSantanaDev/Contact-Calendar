@@ -13,8 +13,9 @@ namespace Contatos.Models
         [Key]
         public int ContactId { get; set; }
         [Required]
+        [MinLength(1, ErrorMessage = "Erro, o nome tem {1} caractéres mínimos")]
         public string Name { get; set; }
-        [Required]
+        [Required]      
         public long Number { get; set; }
         [Required]
         [MaxLength(300)]
