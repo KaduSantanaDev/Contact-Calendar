@@ -31,7 +31,7 @@ namespace Contatos.Controllers
         [HttpGet("{id}", Name = "GetContact")]
         public async Task<ActionResult<Contact>> Get(int id)
         {
-            
+
 
             var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.ContactId == id);
             if (contact == null)
@@ -46,40 +46,44 @@ namespace Contatos.Controllers
 
         // POST api/<UsersControllers>
         [HttpPost]
-        public ActionResult Post([FromBody] Contact contact)
+        public async Task<ActionResult> Post([FromBody] Contact contact)
         {
-            _context.Contacts.Add(contact);
-            _context.SaveChanges();
+            if (contact == null)
+            {
+                throw new Exception("Erro ao tentar criar um novo contato");
+            }
+            await _context.Contacts.AddAsync(contact);
+            await _context.SaveChangesAsync();
             return new CreatedAtRouteResult("GetContact", new { id = contact.ContactId }, contact);
         }
 
         // PUT api/<UsersControllers>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Contact contact)
+        public async Task<ActionResult> Put(int id, [FromBody] Contact contact)
         {
             if (id != contact.ContactId)
             {
-                return BadRequest("Id not found");
+                throw new Exception("Id informado está invállido");
             }
 
             _context.Entry(contact).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
         // DELETE api/<UsersControllers>/5
         [HttpDelete("{id}")]
-        public ActionResult<Contact> Delete(int id)
+        public async Task<ActionResult<Contact>> Delete(int id)
         {
-            var contact = _context.Contacts.FirstOrDefault(c => c.ContactId == id);
+            var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.ContactId == id);
 
             if (contact == null)
             {
-                return NotFound("User not found");
+                throw new Exception($"Erro ao tentar deletar o contato com o id {id}");
             }
 
             _context.Contacts.Remove(contact);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return contact;
         }
     }

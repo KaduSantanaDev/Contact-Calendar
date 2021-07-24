@@ -50,21 +50,21 @@ namespace Contatos.Controllers
 
         // POST api/<UsersControllers>
         [HttpPost]
-        public ActionResult Post([FromBody] User user)
+        public async Task<ActionResult> Post([FromBody] User user)
         {
 
             if (user == null)
             {
-                throw new Exception("Usuário inválido");
+                throw new Exception("Erro ao tentar criar um novo usuário");
             }
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return new CreatedAtRouteResult("GetUser", new { id = user.UserId }, user);
         }
 
         // PUT api/<UsersControllers>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] User user)
+        public async Task<ActionResult> Put(int id, [FromBody] User user)
         {
             if (id != user.UserId)
             {
@@ -72,23 +72,23 @@ namespace Contatos.Controllers
             }
 
             _context.Entry(user).State = EntityState.Modified;
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
             return Ok();
         }
 
         // DELETE api/<UsersControllers>/5
         [HttpDelete("{id}")]
-        public ActionResult<User> Delete(int id)
+        public async Task<ActionResult<User>> Delete(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
 
-            if (User == null)
+            if (user == null)
             {
                 throw new Exception("Id informado está inválido");
             }
 
             _context.Users.Remove(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return user;
         }
     }
