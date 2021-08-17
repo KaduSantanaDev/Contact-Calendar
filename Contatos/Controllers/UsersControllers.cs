@@ -1,15 +1,14 @@
 ﻿using Contatos.Context;
 using Contatos.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Contatos.Controllers
 {
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersControllers : ControllerBase
@@ -36,7 +35,7 @@ namespace Contatos.Controllers
         // GET api/<UsersControllers>/5
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<ActionResult<User>> Get(int id)
-        {          
+        {
             var user = await _context.Users.FirstOrDefaultAsync(p => p.UserId == id);
             if (user == null)
             {
@@ -72,7 +71,7 @@ namespace Contatos.Controllers
             }
 
             _context.Entry(user).State = EntityState.Modified;
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
